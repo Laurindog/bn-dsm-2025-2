@@ -1,4 +1,5 @@
 import prisma from '../database/client.js'
+import { includeRelations } from '../lib/utils.js'
 
 const controller = {}   // Objeto vazio
 
@@ -28,8 +29,12 @@ controller.create = async function(req, res) {
 
 controller.retrieveAll = async function(req, res) {
   try {
-    // Manda buscar todas as categorias cadastradas no BD
+
+    const include = includeRelations(req.query)
+
+    // Manda buscar todas os produtos cadastradas no BD
     const result = await prisma.categoria.findMany({
+      include,
       orderBy: [ { descricao: 'asc' }]  // Ordem ASCendente
     })
 
@@ -46,6 +51,7 @@ controller.retrieveAll = async function(req, res) {
     res.status(500).send(error)
   }
 }
+
 
 controller.retrieveOne = async function(req, res) {
   try {
